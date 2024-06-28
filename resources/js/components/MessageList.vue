@@ -1,27 +1,41 @@
 <template>
-    <div class="mt-4">
-        <h1 class="sr-only">Recent messages</h1>
-        <ul role="list" class="space-y-4">
-            <li v-for="message in messages" :key="message.id" class="bg-white px-4 py-6 shadow sm:rounded-lg sm:p-6">
-                <MessageDetails :message="message" @open-thread="openThread" />
-            </li>
-        </ul>
-
-        <MessageThread
-            v-if="selectedMessage"
-            :message="selectedMessage"
-            :open="openModal"
-            @close-modal="closeThread"
-        />
-
-        <div class="mt-4 text-center">
-            <VSpinner v-if="loadingMessages" />
-            <VLightButton
-                @submit-button-clicked="fetchMessages(currentPage + 1)"
-                v-if="lastPage > currentPage && !loadingMessages"
+    <div>
+        <div class="flex justify-end">
+            <select
+                v-model="sortDirection"
+                id="sort-direction"
+                class="block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                @change="fetchMessages(1)"
             >
-                Load More Messages
-            </VLightButton>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        </div>
+
+        <div class="mt-4">
+            <h1 class="sr-only">Recent messages</h1>
+            <ul role="list" class="space-y-4">
+                <li v-for="message in messages" :key="message.id" class="bg-white px-4 py-6 shadow sm:rounded-lg sm:p-6">
+                    <MessageDetails :message="message" @open-thread="openThread" />
+                </li>
+            </ul>
+
+            <MessageThread
+                v-if="selectedMessage"
+                :message="selectedMessage"
+                :open="openModal"
+                @close-modal="closeThread"
+            />
+
+            <div class="mt-4 text-center">
+                <VSpinner v-if="loadingMessages" />
+                <VLightButton
+                    @submit-button-clicked="fetchMessages(currentPage + 1)"
+                    v-if="lastPage > currentPage && !loadingMessages"
+                >
+                    Load More Messages
+                </VLightButton>
+            </div>
         </div>
     </div>
 </template>
@@ -42,6 +56,7 @@ const props = defineProps({
 
 const messages = ref([]);
 const loadingMessages = ref(false);
+const sortDirection = ref('desc');
 
 onMounted(() => {
     fetchMessages();
@@ -49,7 +64,17 @@ onMounted(() => {
 
 function fetchMessages(page = 1) {
     loadingMessages.value = true;
-    axios.get(`/api/messages/${props.channel.name}?page=${page}`).then(response => {
+
+    if (page === 1) {
+        messages.value = [];
+    }
+
+    axios.get(`/api/messages/${props.channel.name}`, {
+        params: {
+            page: page,
+            sort_direction: sortDirection.value,
+        }
+    }).then(response => {
         response.data.data.forEach(message => {
             messages.value.push(message);
         });

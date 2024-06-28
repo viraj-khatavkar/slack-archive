@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
-    public function index(Channel $channel)
+    public function index(Channel $channel, Request $request)
     {
         $messages = Message::where('channel_id', $channel->id)
             ->whereNull('parent_id')
             ->with('user')
             ->withCount('children')
-            ->orderBy('slack_timestamp', 'desc')
+            ->orderBy('slack_timestamp', $request->get('sort_direction', 'desc'))
             ->paginate(25);
 
         return response()->json($messages);
