@@ -47,12 +47,12 @@
                 </span>
             </div>
             <div class="flex text-sm">
-                <span class="inline-flex items-center text-sm" v-if="showShareLink">
-                    <button type="button" class="inline-flex space-x-2 text-gray-400 hover:text-gray-500">
-                        <ShareIcon class="h-5 w-5" aria-hidden="true"/>
-                        <span class="font-medium text-gray-900">Share</span>
-                    </button>
-                </span>
+<!--                <span class="inline-flex items-center text-sm" v-if="showShareLink">-->
+<!--                    <button type="button" class="inline-flex space-x-2 text-gray-400 hover:text-gray-500">-->
+<!--                        <ShareIcon class="h-5 w-5" aria-hidden="true"/>-->
+<!--                        <span class="font-medium text-gray-900">Share</span>-->
+<!--                    </button>-->
+<!--                </span>-->
             </div>
         </div>
     </article>
