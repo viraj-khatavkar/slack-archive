@@ -20,7 +20,7 @@ class SearchController extends Controller
             ->with('user', 'channel', 'parent.user')
             ->withCount('children')
             ->orderBy('slack_timestamp', 'desc')
-            ->paginate(10);
+            ->paginate(25);
 
         return response()->json($messages);
     }

@@ -16,7 +16,7 @@ class MessagesController extends Controller
             ->with('user')
             ->withCount('children')
             ->orderBy('slack_timestamp', 'desc')
-            ->paginate(100);
+            ->paginate(25);
 
         return response()->json($messages);
     }
