@@ -42,7 +42,7 @@
                             <!-- Sidebar component, swap this element with another sidebar if you like -->
                             <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                                 <div class="flex h-16 shrink-0 items-center">
-                                    <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+                                    <img class="h-8 w-auto" src="/images/logo.png" alt="Your Company" />
                                 </div>
                                 <nav class="flex flex-1 flex-col">
                                     <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -77,7 +77,7 @@
             <!-- Sidebar component, swap this element with another sidebar if you like -->
             <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
                 <div class="flex h-16 shrink-0 items-center">
-                    <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+                    <img class="h-8 w-auto" src="/images/logo.png" alt="Your Company" />
                 </div>
                 <nav class="flex flex-1 flex-col">
                     <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -114,16 +114,19 @@
                 <div class="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" />
 
                 <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                    <form class="relative flex flex-1" action="#" method="GET">
+                    <form class="relative flex flex-1" action="/search" method="GET">
                         <label for="search-field" class="sr-only">Search</label>
-                        <MagnifyingGlassIcon class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400" aria-hidden="true" />
-                        <input id="search-field" class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." type="search" name="search" />
+                        <MagnifyingGlassIcon v-if="shouldShowSearchBar" class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400" aria-hidden="true" />
+                        <input
+                            v-if="shouldShowSearchBar"
+                            id="search-field"
+                            class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+                            :placeholder=searchPlaceholder
+                            type="search"
+                            name="q"
+                        />
                     </form>
                     <div class="flex items-center gap-x-4 lg:gap-x-6">
-                        <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-                            <span class="sr-only">View notifications</span>
-                            <BellIcon class="h-6 w-6" aria-hidden="true" />
-                        </button>
 
                         <!-- Separator -->
                         <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
@@ -160,7 +163,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {
     Dialog,
     DialogPanel,
@@ -193,12 +196,33 @@ onMounted(() => {
             current: window.location.href.indexOf(`/channels/${channel.name}`) > -1,
         })
     });
+
+    window.addEventListener('keydown', event =>{
+        if (event.metaKey && event.key === 'k') {
+            event.preventDefault();
+            document.getElementById('search-field').focus();
+        }
+    });
 })
 
 const userNavigation = [
     { name: 'Your profile', href: '#' },
     { name: 'Sign out', href: '#' },
 ]
+
+const shouldShowSearchBar = computed(() => {
+    return window.location.href.indexOf(`search`) < 0
+})
+
+const searchPlaceholder = computed(() => {
+    if (navigator.userAgent.indexOf("Mac") !== -1) {
+        return 'Cmd+K to search';
+    } else if (navigator.userAgent.indexOf("Win") !== -1) {
+        return 'Ctrl+K to search';
+    } else {
+        return 'Search';
+    }
+});
 
 const sidebarOpen = ref(false)
 </script>

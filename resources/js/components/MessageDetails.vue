@@ -11,7 +11,7 @@
                     </p>
                     <p class="text-sm text-gray-500">
                         <time :datetime="message.slack_timestamp">
-                            
+
                             {{ formatDate(message.slack_timestamp, 'DD MMM YYYY, hh:mm A') }}
                         </time>
                     </p>
@@ -27,10 +27,21 @@
                     <button
                         type="button"
                         class="inline-flex space-x-2 text-gray-400 hover:text-gray-500 border b-0 p-2"
-                        @click.prevent="emitOpenThread"
+                        @click.prevent="emitOpenThread(props.message)"
                     >
-                        <ChatBubbleLeftEllipsisIcon class="h-5 w-5" aria-hidden="true"/>
+                        <ChatBubbleLeftEllipsisIcon class="h-5 w-5" aria-hidden="true" />
                         <span class="font-medium text-gray-900">{{ message.children_count }} replies</span>
+                        <span class="sr-only">replies</span>
+                    </button>
+                </span>
+                <span class="inline-flex items-center text-sm" v-if="message.parent && showOpenThreadButton">
+                    <button
+                        type="button"
+                        class="inline-flex space-x-2 text-gray-400 hover:text-gray-500 border b-0 p-2"
+                        @click.prevent="emitOpenThread(props.message.parent)"
+                    >
+                        <ChatBubbleLeftEllipsisIcon class="h-5 w-5" aria-hidden="true" />
+                        <span class="font-medium text-gray-900">Check Thread</span>
                         <span class="sr-only">replies</span>
                     </button>
                 </span>
@@ -65,13 +76,18 @@ const props = defineProps({
     showShareLink: {
         type: Boolean,
         default: true
+    },
+
+    showOpenThreadButton: {
+        type: Boolean,
+        default: false,
     }
 })
 
 const emit = defineEmits(['open-thread'])
 
-function emitOpenThread() {
-    emit('open-thread', props.message)
+function emitOpenThread(message) {
+    emit('open-thread', message)
 }
 </script>
 

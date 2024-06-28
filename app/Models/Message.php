@@ -16,6 +16,16 @@ class Message extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Message::class, 'parent_id');
+    }
+
     public function children()
     {
         return $this->hasMany(Message::class, 'parent_id');

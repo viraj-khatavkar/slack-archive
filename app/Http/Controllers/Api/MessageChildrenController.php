@@ -12,7 +12,7 @@ class MessageChildrenController extends Controller
     {
         $children = $message->children()
             ->with('user')
-            ->orderBy('created_at', 'asc')
+            ->orderBy('slack_timestamp', 'asc')
             ->get();
 
         return response()->json($children);

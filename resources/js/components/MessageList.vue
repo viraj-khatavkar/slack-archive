@@ -16,12 +16,12 @@
 
         <div class="mt-4 text-center">
             <VSpinner v-if="loadingMessages" />
-            <VButton
+            <VLightButton
                 @submit-button-clicked="fetchMessages(currentPage + 1)"
                 v-if="lastPage > currentPage && !loadingMessages"
             >
                 Load More Messages
-            </VButton>
+            </VLightButton>
         </div>
     </div>
 </template>
@@ -30,8 +30,8 @@
 import {onMounted, ref} from "vue";
 import MessageDetails from "./MessageDetails.vue";
 import MessageThread from "./MessageThread.vue";
-import VButton from "./utilities/VButton.vue";
 import VSpinner from "./utilities/VSpinner.vue";
+import VLightButton from "./utilities/VLightButton.vue";
 
 const props = defineProps({
     channel: {
