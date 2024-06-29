@@ -163,7 +163,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, provide, ref} from 'vue'
 import {
     Dialog,
     DialogPanel,
@@ -185,6 +185,8 @@ const props = defineProps({
 });
 
 const channels = ref([]);
+
+provide('channels', channels.value);
 
 onMounted(() => {
     props.channels.forEach(channel => {

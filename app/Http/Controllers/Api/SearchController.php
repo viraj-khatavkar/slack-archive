@@ -17,10 +17,26 @@ class SearchController extends Controller
             ->when($request->to_date, function ($query) use ($request) {
                 return $query->where('slack_timestamp', '<=', $request->to_date);
             })
+            ->when($request->channel_id, function ($query) use ($request) {
+                if ($request->channel_id > 0) {
+                    return $query->where('channel_id', $request->channel_id);
+                }
+
+                return $query;
+            })
             ->with('user', 'channel', 'parent.user')
-            ->withCount('children')
-            ->orderBy('slack_timestamp', 'desc')
-            ->paginate(25);
+            ->withCount('children');
+
+        if ($request->sort_by === 'children_count') {
+            $messages = $messages
+                ->whereNull('parent_id')
+                ->orderBy('children_count', $request->sort_direction);
+        } else {
+            $messages = $messages->orderBy($request->sort_by, $request->sort_direction);
+        }
+
+
+        $messages = $messages->paginate(25);
 
         return response()->json($messages);
     }
